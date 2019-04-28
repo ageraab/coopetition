@@ -169,7 +169,7 @@ with tf.device('/device:GPU:1'): #device:GPU:1
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     with tf.Session(config=config) as sess:
-        model = load_model('program/04-modified-resnet_w.hdf5')
+        model = load_model('program/04-modified-resnet.hdf5')
         #sess.run(tf.global_variables_initializer())
         pred = model.predict(x_test, verbose=0)
         pred = np.argmax(pred,axis=3).astype(int)
