@@ -165,7 +165,7 @@ os.environ['CITYSCAPES_DATASET'] = xTest
 x_test, yyyyyy, filenames = importBatch(500, 0, 0, 'test', 4) 
 
 x_test = x_test.astype('uint8') 
-with tf.device('/cpu:0'): #device:GPU:1
+with tf.device('/device:GPU:1'): #device:GPU:1
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     with tf.Session(config=config) as sess:
