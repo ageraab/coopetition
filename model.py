@@ -146,7 +146,12 @@ def tversky_loss(y_true, y_pred):
     classNumber = K.cast(K.shape(y_true)[-1], 'float32') ### equal classNumber = 20.0
     return classNumber - T
 
+def iou_loss_core(true,pred):
+    intersection = true * pred
+    notTrue = 1 - true
+    union = true + (notTrue * pred)
 
+    return (K.sum(intersection, axis=-1) + K.epsilon()) / (K.sum(union, axis=-1) + K.epsilon())
 
 def eval_model(model):
     x_pred = model.predict(x_val_data, verbose=VERBOSE)
@@ -169,7 +174,7 @@ with tf.device('/device:GPU:1'): #device:GPU:1
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     with tf.Session(config=config) as sess:
-        model = load_model('program/07-fpn-triangle-120.hdf5')
+        model = load_model('program/07-fpn-triangle-120.hdf5', custom_objects={'tversky_loss': tversky_loss, 'iou_loss_core': iou_loss_core})
         #sess.run(tf.global_variables_initializer())
         pred = model.predict(x_test, verbose=0)
         pred = np.argmax(pred,axis=3).astype(int)
