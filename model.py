@@ -158,10 +158,11 @@ def eval_model(model):
     x_pred = model.predict(x_val_data, verbose=VERBOSE)
     new_x = np.argmax(x_pred, axis=3)
     new_x = new_x.astype(int)
+    final_x = np.array((new_x.shape[0], new_x.shape[1] * 4, new_x.shape[2] * 4))
     for i in range(new_x.shape[0]):
-        new_x[i] = UpscaleImg(new_x[i], 4, False)
+       final_x[i] = UpscaleImg(new_x[i], 4, False)
     y_val = np.argmax(y_val_data, axis=3)
-    score = eval_preds(new_x, y_val)
+    score = eval_preds(final_x, y_val)
     return score
 
 #xTest = "../rvygon_data"
@@ -179,10 +180,11 @@ with tf.device('/cpu:0'): #device:GPU:1
         #sess.run(tf.global_variables_initializer())
         pred = model.predict(x_test, verbose=0)
         pred = np.argmax(pred,axis=3).astype(int)
+        final_pred = np.array((pred.shape[0], pred.shape[1] * 4, pred.shape[2] * 4))
         for i in range(pred.shape[0]):
-            pred[i] = UpscaleImg(pred[i], 4, False)
+            final_pred[i] = UpscaleImg(pred[i], 4, False)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         for i in range(len(filenames)): 
             impath = os.path.join(output_dir, filenames[i].split('/')[-1]+'_gtFine_labelIds.png')
-            imsave(impath, pred[i])
+            imsave(impath, final_pred[i])
