@@ -177,7 +177,7 @@ with tf.device('/cpu:0'): #device:GPU:1
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     with tf.Session(config=config) as sess:
-        model = keras.models.load_model('program/08-reverse-triangle.hdf5', custom_objects={'tversky_loss': tversky_loss, 'iou_loss_core': iou_loss_core})
+        model = keras.models.load_model('program/11-pspnet-2.hdf5', custom_objects={'tversky_loss': tversky_loss, 'iou_loss_core': iou_loss_core})
         #sess.run(tf.global_variables_initializer())
         pred = model.predict(x_test, verbose=0)
         pred = np.argmax(pred,axis=3).astype(int)
