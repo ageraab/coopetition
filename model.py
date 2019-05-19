@@ -100,7 +100,7 @@ BATCH_SIZE = 1
 TOTAL_SIZE = 200
 EPOCH_SIZE = int(TOTAL_SIZE / BATCH_SIZE)
 VAL_SIZE = 40
-SCALE_RATE = 1
+SCALE = 2
 VERBOSE = 1
 START_INDEX = 0
 
@@ -160,7 +160,7 @@ def eval_model(model):
     new_x = new_x.astype(int)
     final_x = np.ndarray((new_x.shape[0], new_x.shape[1] * 4, new_x.shape[2] * 4))
     for i in range(new_x.shape[0]):
-       final_x[i] = UpscaleImg(new_x[i], 4, False)
+       final_x[i] = UpscaleImg(new_x[i], SCALE, False)
     final_x[final_x == 19] = 255
     y_val = np.argmax(y_val_data, axis=3)
     score = eval_preds(final_x, y_val)
@@ -170,20 +170,20 @@ def eval_model(model):
 output_dir = "res"
 xTest, output_dir = sys.argv[1:]
 os.environ['CITYSCAPES_DATASET'] = xTest
-x_test, yyyyyy, filenames = importBatch(500, 0, 0, 'test', 4) 
+x_test, yyyyyy, filenames = importBatch(500, 0, 0, 'test', SCALE) 
 
 x_test = x_test.astype('uint8') 
 with tf.device('/cpu:0'): #device:GPU:1
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     with tf.Session(config=config) as sess:
-        model = keras.models.load_model('program/05-fpn-1.hdf5', custom_objects={'tversky_loss': tversky_loss, 'iou_loss_core': iou_loss_core})
+        model = keras.models.load_model('program/12-2x-pspnet-30.hdf5', custom_objects={'tversky_loss': tversky_loss, 'iou_loss_core': iou_loss_core})
         #sess.run(tf.global_variables_initializer())
         pred = model.predict(x_test, verbose=0)
         pred = np.argmax(pred,axis=3).astype(int)
-        final_pred = np.ndarray((pred.shape[0], pred.shape[1] * 4, pred.shape[2] * 4))
+        final_pred = np.ndarray((pred.shape[0], pred.shape[1] * SCALE, pred.shape[2] * 4))
         for i in range(pred.shape[0]):
-            final_pred[i] = UpscaleImg(pred[i], 4, False)
+            final_pred[i] = UpscaleImg(pred[i], SCALE, False)
         final_pred[final_pred == 19] = 255
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
