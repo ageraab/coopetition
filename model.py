@@ -158,7 +158,7 @@ def eval_model(model):
     x_pred = model.predict(x_val_data, verbose=VERBOSE)
     new_x = np.argmax(x_pred, axis=3)
     new_x = new_x.astype(int)
-    final_x = np.ndarray((new_x.shape[0], new_x.shape[1] * 4, new_x.shape[2] * 4))
+    final_x = np.ndarray((new_x.shape[0], new_x.shape[1] * SCALE, new_x.shape[2] * SCALE))
     for i in range(new_x.shape[0]):
        final_x[i] = UpscaleImg(new_x[i], SCALE, False)
     final_x[final_x == 19] = 255
@@ -181,7 +181,7 @@ with tf.device('/cpu:0'): #device:GPU:1
         #sess.run(tf.global_variables_initializer())
         pred = model.predict(x_test, verbose=0)
         pred = np.argmax(pred,axis=3).astype(int)
-        final_pred = np.ndarray((pred.shape[0], pred.shape[1] * SCALE, pred.shape[2] * 4))
+        final_pred = np.ndarray((pred.shape[0], pred.shape[1] * SCALE, pred.shape[2] * SCALE))
         for i in range(pred.shape[0]):
             final_pred[i] = UpscaleImg(pred[i], SCALE, False)
         final_pred[final_pred == 19] = 255
