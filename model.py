@@ -173,6 +173,7 @@ xTest, output_dir = sys.argv[1:]
 os.environ['CITYSCAPES_DATASET'] = xTest
 x_test, yyyyyy, filenames = importBatch(500, 0, 0, 'test', SCALE) 
 
+
 x_test = x_test.astype('uint8') 
 with tf.device('/cpu:0'): #device:GPU:1
     config = tf.ConfigProto()
