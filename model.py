@@ -100,7 +100,7 @@ BATCH_SIZE = 1
 TOTAL_SIZE = 200
 EPOCH_SIZE = int(TOTAL_SIZE / BATCH_SIZE)
 VAL_SIZE = 40
-SCALE = 4
+SCALE = 2
 VERBOSE = 1
 START_INDEX = 0
 
@@ -121,14 +121,8 @@ from tensorflow.python.keras.optimizers import *
 from tensorflow.python.keras.callbacks import ModelCheckpoint, LearningRateScheduler
 import time
 import functools
-#from eval import *
-
-
 import random
-#%env CITYSCAPES_DATASET = /home/skim/data/
 from tensorflow.metrics import *
-#%load_ext autoreload
-#%autoreload 2
 
 def tversky_loss(y_true, y_pred):
     alpha = 0.5
@@ -179,8 +173,8 @@ with tf.device('/cpu:0'): #device:GPU:1
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     with tf.Session(config=config) as sess:
-        model = keras.models.load_model('program/18-pspnet-with-resnet.hdf5', custom_objects={'tversky_loss': tversky_loss, 'iou_loss_core': iou_loss_core})
-        #sess.run(tf.global_variables_initializer())
+        #models/17-mod-pspnet-75.hdf5
+        model = keras.models.load_model('program/17-mod-pspnet-75.hdf5', custom_objects={'tversky_loss': tversky_loss, 'iou_loss_core': iou_loss_core})
         pred = model.predict(x_test, verbose=0)
         pred = np.argmax(pred,axis=3).astype(int)
         final_pred = np.ndarray((pred.shape[0], pred.shape[1] * SCALE, pred.shape[2] * SCALE))
